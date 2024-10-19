@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+map<int,vector<pair<int,int>>> mp;
+void solve()
+{
+    int n,m,x,y,l;
+    cin >> n >> m >> x >> y >> l;
+    int a[n][m];
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<m;j++)
+        {
+            cin >> a[i][j];
+        }
+    }
+    vector<vector<int>> visi(n,vector<int>(m,0));
+    queue<pair<int,int>> que;
+    int level=1;
+    que.push({x,y});
+    visi[x][y]=1;
+    int count=0;
+    if(a[x][y]==0)
+    {
+        que.pop();
+    }
+    while(!que.empty() && level<=l)
+    {
+        int size=que.size();
+        count+=que.size();
+        while(size--)
+        {
+            auto [p,q]=que.front();
+            que.pop();
+            
+            for(auto it:mp[a[p][q]])
+            {
+                int i=p+it.first,j=q+it.second;
+                int flag=0;
+                if(i<n && j<m && i>=0 && j>=0 && !visi[i][j] && a[i][j]>0)
+                {
+                    for(auto it2:mp[a[i][j]])
+                    {
+                        int val1=it2.first;
+                        int val2=it2.second;
+                        if(val1==(-1*it.first) && val2==(-1*it.second))
+                        {
+                            flag=1;
+                        }
+                    }
+                    if(flag)
+                    {
+                        que.push({i,j});
+                        visi[i][j]=1;
+                    }
+                }
+            }
+        }
+        level++;
+    }
+    cout << count << endl;
+}
+int main()
+{
+    mp[1]={{-1,0},{1,0},{0,-1},{0,1}};
+    mp[2]={{-1,0},{1,0}};
+    mp[3]={{0,-1},{0,1}};
+    mp[4]={{-1,0},{0,1}};
+    mp[5]={{1,0},{0,1}};
+    mp[6]={{1,0},{0,-1}};
+    mp[7]={{-1,0},{0,-1}};
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        solve();
+    }
+    return 0;
+}
